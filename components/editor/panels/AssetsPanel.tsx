@@ -11,6 +11,7 @@ import { createClient } from "@/lib/supabase/client";
 import { useToast } from "@/components/toast";
 import { Button } from "@/components/ui";
 import { cn, formatBytes } from "@/lib/utils";
+import { FileText, Trash2 } from "lucide-react";
 
 export function AssetsPanel() {
   const assets = useEditor((s) => s.assets);
@@ -104,7 +105,7 @@ export function AssetsPanel() {
                   {isImg ? (
                     <img src={`${assetUrlBase}/${a.path}`} alt={a.name} className="h-full w-full object-cover" loading="lazy" />
                   ) : (
-                    <span className="text-[22px]">📄</span>
+                    <FileText size={22} strokeWidth={1.6} className="text-ink-muted" />
                   )}
                 </div>
                 <div className="p-1.5">
@@ -117,8 +118,8 @@ export function AssetsPanel() {
                     <button onClick={() => copyUrl(a)} title="Copy URL" className="flex-1 cursor-pointer rounded px-1 py-0.5 text-[9.5px] text-ink-muted hover:bg-black/5 dark:hover:bg-white/10">
                       URL
                     </button>
-                    <button onClick={() => remove(a)} title="Delete" className="cursor-pointer rounded px-1 py-0.5 text-[9.5px] text-ink-muted hover:bg-bad/15 hover:text-bad">
-                      ✕
+                    <button onClick={() => remove(a)} title="Delete" className="cursor-pointer rounded p-1 text-ink-muted hover:bg-bad/15 hover:text-bad">
+                      <Trash2 size={11} />
                     </button>
                   </div>
                 </div>

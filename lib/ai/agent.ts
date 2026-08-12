@@ -6,6 +6,7 @@ import "server-only";
 import { complete, type ChatMessage, type ToolCall, type ToolSpec } from "./providers";
 import { buildContext } from "./context";
 import { runStaticChecks } from "@/lib/qa/static";
+import { cleanDocStart } from "@/lib/editor/fs";
 import { parse, type HTMLElement } from "node-html-parser";
 
 export interface AgentFile {
@@ -142,6 +143,7 @@ export async function runAgent(opts: {
     const secretHits = ["sk-", "ghp_", "-----BEGIN"].filter((x) => content.includes(x));
     if (secretHits.length) return `ERROR: Refusing draft — the content contains an exposed secret pattern (${secretHits.join(", ")}). Never put secrets in site files.`;
     if (content.length > 1_500_000) return "ERROR: File too large (1.5MB cap).";
+    content = cleanDocStart(content); // LLMs sometimes emit literal \n runs at the start — never store them
     const existing = store.get(path);
     if (existing && existing.content === content) return "OK (unchanged)";
     store.set(path, { path, content, kind: "file" });

@@ -5,6 +5,17 @@
 
 import { useEditor } from "./store";
 import { cn } from "@/lib/utils";
+import {
+  FileText,
+  Puzzle,
+  Image as ImageIcon,
+  FolderOpen,
+  History,
+  FlaskConical,
+  Rocket,
+  BarChart3,
+  Settings,
+} from "lucide-react";
 import { PagesPanel } from "./panels/PagesPanel";
 import { ComponentsPanel } from "./panels/ComponentsPanel";
 import { AssetsPanel } from "./panels/AssetsPanel";
@@ -16,15 +27,15 @@ import { SettingsPanel } from "./panels/SettingsPanel";
 import { AnalyticsPanel } from "./panels/AnalyticsPanel";
 
 const NAV = [
-  { id: "pages", icon: "📄", label: "Pages" },
-  { id: "components", icon: "🧩", label: "Components" },
-  { id: "assets", icon: "🖼", label: "Assets" },
-  { id: "files", icon: "📁", label: "Files" },
-  { id: "history", icon: "🕘", label: "History" },
-  { id: "tests", icon: "🧪", label: "Tests" },
-  { id: "deploy", icon: "🚀", label: "Deploy" },
-  { id: "analytics", icon: "📊", label: "Analytics" },
-  { id: "settings", icon: "⚙️", label: "Settings" },
+  { id: "pages", icon: FileText, label: "Pages" },
+  { id: "components", icon: Puzzle, label: "Components" },
+  { id: "assets", icon: ImageIcon, label: "Assets" },
+  { id: "files", icon: FolderOpen, label: "Files" },
+  { id: "history", icon: History, label: "History" },
+  { id: "tests", icon: FlaskConical, label: "Tests" },
+  { id: "deploy", icon: Rocket, label: "Deploy" },
+  { id: "analytics", icon: BarChart3, label: "Analytics" },
+  { id: "settings", icon: Settings, label: "Settings" },
 ] as const;
 
 const PANELS: Record<string, () => React.ReactElement> = {
@@ -60,7 +71,7 @@ export function SidebarNav() {
                 : "opacity-60 hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/10"
             )}
           >
-            <span aria-hidden>{n.icon}</span>
+            <n.icon size={16} strokeWidth={1.8} aria-hidden />
             {leftNav === n.id && <span className="absolute -left-[7px] h-4 w-0.5 rounded-full bg-accent" />}
           </button>
         ))}

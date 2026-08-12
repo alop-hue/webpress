@@ -7,13 +7,15 @@ import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { Button, Input } from "@/components/ui";
+import { Button } from "@/components/ui";
 import { useToast } from "@/components/toast";
+import { Eye, EyeOff, ArrowRight, Sparkles } from "lucide-react";
 
 function AuthForm({ mode }: { mode: "login" | "signup" }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const params = useSearchParams();
@@ -70,31 +72,87 @@ function AuthForm({ mode }: { mode: "login" | "signup" }) {
   };
 
   return (
-    <div className="flex min-h-dvh items-center justify-center p-4">
+    <div
+      className="flex min-h-dvh items-center justify-center p-4"
+      style={{
+        background:
+          "radial-gradient(1100px 500px at 50% -10%, color-mix(in srgb, var(--accent) 9%, transparent), transparent), radial-gradient(700px 400px at 90% 110%, color-mix(in srgb, var(--accent) 5%, transparent), transparent)",
+      }}
+    >
       <div className="w-full max-w-sm">
+        <div className="mb-7 flex flex-col items-center text-center">
+          <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-gradient-to-br from-accent to-accent-strong text-lg font-bold text-white shadow-lg shadow-accent/25">
+            W
+          </div>
+          <h1 className="text-xl font-semibold tracking-tight">Webpress</h1>
+          <p className="mt-1 flex items-center gap-1 text-[13px] text-ink-muted">
+            {mode === "login" ? "Welcome back. Continue building." : "Create websites. Own the code."}
+          </p>
+        </div>
+
         {callbackError && mode === "login" && (
           <div className="mb-5 rounded-xl border border-bad/30 bg-bad/10 px-3 py-2.5 text-center text-[12.5px] text-bad">
             That confirmation link is invalid or has expired — try signing in, or create a new account.
           </div>
         )}
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex size-11 items-center justify-center rounded-2xl bg-accent text-lg font-bold text-white">W</div>
-          <h1 className="text-xl font-semibold tracking-tight">Webpress</h1>
-          <p className="mt-1 text-[13px] text-ink-muted">
-            {mode === "login" ? "Welcome back. Continue building." : "Create websites. Own the code. Publish in one click."}
-          </p>
-        </div>
-        <form onSubmit={submit} className="space-y-3">
+
+        <form onSubmit={submit} className="space-y-3 rounded-2xl border border-line bg-surface/80 p-6 shadow-xl shadow-black/[.04] backdrop-blur">
           {mode === "signup" && (
-            <Input placeholder="Your name" value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
+            <label className="block">
+              <span className="mb-1.5 block text-[12px] font-medium text-ink-muted">Name</span>
+              <input
+                className="inp h-10"
+                placeholder="Your name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                autoComplete="name"
+              />
+            </label>
           )}
-          <Input type="email" required placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
-          <Input type="password" required minLength={8} placeholder="Password (min 8 characters)" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete={mode === "login" ? "current-password" : "new-password"} />
-          <Button type="submit" variant="primary" size="lg" loading={loading} className="w-full">
+          <label className="block">
+            <span className="mb-1.5 block text-[12px] font-medium text-ink-muted">Email</span>
+            <input
+              className="inp h-10"
+              type="email"
+              required
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              autoComplete="email"
+            />
+          </label>
+          <label className="block">
+            <span className="mb-1.5 block text-[12px] font-medium text-ink-muted">Password</span>
+            <div className="relative">
+              <input
+                className="inp h-10 pr-10"
+                type={showPw ? "text" : "password"}
+                required
+                minLength={8}
+                placeholder={mode === "login" ? "Your password" : "Min 8 characters"}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                autoComplete={mode === "login" ? "current-password" : "new-password"}
+              />
+              <button
+                type="button"
+                tabIndex={-1}
+                onClick={() => setShowPw((v) => !v)}
+                aria-label={showPw ? "Hide password" : "Show password"}
+                title={showPw ? "Hide password" : "Show password"}
+                className="absolute inset-y-0 right-0 flex w-10 cursor-pointer items-center justify-center text-ink-muted/70 transition-colors hover:text-ink"
+              >
+                {showPw ? <EyeOff size={16} strokeWidth={1.8} /> : <Eye size={16} strokeWidth={1.8} />}
+              </button>
+            </div>
+          </label>
+          <Button type="submit" variant="primary" size="lg" loading={loading} className="mt-1 w-full">
             {mode === "login" ? "Sign in" : "Create account"}
+            {!loading && <ArrowRight size={15} strokeWidth={2} />}
           </Button>
         </form>
-        <p className="mt-6 text-center text-[12.5px] text-ink-muted">
+
+        <p className="mt-5 text-center text-[12.5px] text-ink-muted">
           {mode === "login" ? (
             <>
               New to Webpress?{" "}
@@ -110,6 +168,11 @@ function AuthForm({ mode }: { mode: "login" | "signup" }) {
               </a>
             </>
           )}
+        </p>
+
+        <p className="mt-6 flex items-center justify-center gap-1.5 text-center text-[11px] text-ink-muted/70">
+          <Sparkles size={11} strokeWidth={2} />
+          Visual editor · real code · AI agents · one-click publishing
         </p>
       </div>
     </div>

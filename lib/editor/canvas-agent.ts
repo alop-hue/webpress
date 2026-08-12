@@ -6,6 +6,8 @@
  * Never runs on public pages — only injected by the editor.
  */
 
+import { cleanDocStart } from "./fs";
+
 export const canvasAgentSource = String.raw`
 (function () {
   if (window.__wpAgent) return;
@@ -411,6 +413,7 @@ export function inlineProjectAssets(doc: string, files: Record<string, { content
 
 /** Build the srcdoc used by the visual canvas: real page + inlined assets + style tag + agent script */
 export function buildSrcdoc(doc: string, styleCss = "", files: Record<string, { content: string }> = {}): string {
+  doc = cleanDocStart(doc);
   if (!/<body/i.test(doc)) doc = DEFAULT_DOC;
   const styleTag = `<style data-wp-styles="1" id="wp-el-styles">${styleCss}</style>`;
   const agent = `\n<script data-wp-agent="1">${canvasAgentSource}</script>\n`;

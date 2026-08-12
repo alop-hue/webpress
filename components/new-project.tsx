@@ -6,7 +6,22 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { api } from "@/lib/http";
-import { Button, Input, Textarea, Spinner, Badge } from "@/components/ui";
+import { Button, Input, Textarea, Badge, Skeleton } from "@/components/ui";
+import {
+  FileText,
+  Rocket,
+  Palette,
+  Link as LinkIcon,
+  User,
+  Bot,
+  UtensilsCrossed,
+  Building2,
+  ShoppingBag,
+  PenLine,
+  BookOpen,
+  Zap,
+  Globe,
+} from "lucide-react";
 import { useToast } from "@/components/toast";
 import { cn } from "@/lib/utils";
 
@@ -85,7 +100,15 @@ export default function NewProjectPage() {
         <div>
           <span className="mb-2 block text-[12.5px] font-semibold text-ink-muted">Template</span>
           {!templates ? (
-            <div className="flex items-center gap-2 text-ink-muted"><Spinner className="size-4" /> Loading templates…</div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className="rounded-2xl border border-line bg-surface p-4">
+                  <Skeleton className="mb-3 h-20 w-full rounded-xl" />
+                  <Skeleton className="mb-2 h-3.5 w-2/3" />
+                  <Skeleton className="h-3 w-1/2" />
+                </div>
+              ))}
+            </div>
           ) : (
             <div className="grid gap-3 sm:grid-cols-2">
               <TemplateCard
@@ -94,7 +117,7 @@ export default function NewProjectPage() {
                 name="Blank"
                 category="Start fresh"
                 description="An empty page and your own imagination. Best for full control."
-                icon="📄"
+                icon={<FileText size={30} strokeWidth={1.6} />}
               />
               {templates.map((t) => (
                 <TemplateCard
@@ -125,21 +148,21 @@ export default function NewProjectPage() {
   );
 }
 
-function templateIcon(id: string): string {
-  const map: Record<string, string> = {
-    saas: "🚀",
-    portfolio: "🎨",
-    linktree: "🔗",
-    personal: "👤",
-    chatbot: "🤖",
-    restaurant: "🍽️",
-    agency: "🏢",
-    store: "🛍️",
-    blog: "📝",
-    docs: "📚",
-    startup: "⚡",
+function templateIcon(id: string): React.ReactNode {
+  const map: Record<string, React.ReactNode> = {
+    saas: <Rocket size={30} strokeWidth={1.6} />,
+    portfolio: <Palette size={30} strokeWidth={1.6} />,
+    linktree: <LinkIcon size={30} strokeWidth={1.6} />,
+    personal: <User size={30} strokeWidth={1.6} />,
+    chatbot: <Bot size={30} strokeWidth={1.6} />,
+    restaurant: <UtensilsCrossed size={30} strokeWidth={1.6} />,
+    agency: <Building2 size={30} strokeWidth={1.6} />,
+    store: <ShoppingBag size={30} strokeWidth={1.6} />,
+    blog: <PenLine size={30} strokeWidth={1.6} />,
+    docs: <BookOpen size={30} strokeWidth={1.6} />,
+    startup: <Zap size={30} strokeWidth={1.6} />,
   };
-  return map[id] ?? "🌐";
+  return map[id] ?? <Globe size={30} strokeWidth={1.6} />;
 }
 
 function TemplateCard({
@@ -157,7 +180,7 @@ function TemplateCard({
   category: string;
   description: string;
   tags?: string[];
-  icon: string;
+  icon: React.ReactNode;
 }) {
   return (
     <button
@@ -168,7 +191,7 @@ function TemplateCard({
         selected ? "border-accent ring-2 ring-accent/25" : "border-line hover:border-accent/40"
       )}
     >
-      <div className="mb-3 flex h-20 items-center justify-center rounded-xl bg-gradient-to-br from-accent-soft to-black/[.03] text-3xl dark:to-white/[.06]">
+      <div className="mb-3 flex h-20 items-center justify-center rounded-xl bg-gradient-to-br from-accent-soft to-black/[.03] text-accent transition-transform duration-200 group-hover:scale-[1.03] dark:to-white/[.06]">
         {icon}
       </div>
       <div className="flex items-center justify-between">

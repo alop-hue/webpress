@@ -12,6 +12,7 @@ import { Button } from "@/components/ui";
 import { Dialog, ConfirmDialog } from "@/components/dialog";
 import { cn } from "@/lib/utils";
 import { pageToPath } from "@/lib/editor/fs";
+import { Plus, Trash2 } from "lucide-react";
 
 export function PagesPanel() {
   const pages = useEditor((s) => s.pages);
@@ -87,7 +88,7 @@ export function PagesPanel() {
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between border-b border-line px-3 py-2.5">
         <h2 className="text-[12px] font-semibold">Pages</h2>
-        <Button size="sm" onClick={() => setOpen(true)}>＋ New</Button>
+        <Button size="sm" onClick={() => setOpen(true)}><Plus size={13} /> New</Button>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-2">
         {pages.length === 0 && (
@@ -112,9 +113,9 @@ export function PagesPanel() {
                     setDeletePath(p.path);
                   }}
                   title="Delete page"
-                  className="hidden shrink-0 cursor-pointer rounded p-0.5 text-[11px] text-ink-muted hover:bg-bad/15 hover:text-bad group-hover:inline-block"
+                  className="hidden shrink-0 cursor-pointer rounded p-1 text-ink-muted hover:bg-bad/15 hover:text-bad group-hover:inline-block"
                 >
-                  ✕
+                  <Trash2 size={12} />
                 </button>
               </div>
               <input

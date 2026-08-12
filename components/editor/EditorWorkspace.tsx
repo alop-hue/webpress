@@ -24,11 +24,13 @@ import { SettingsPanel } from "./panels/SettingsPanel";
 import { AnalyticsPanel } from "./panels/AnalyticsPanel";
 import { api } from "@/lib/http";
 import { useToast } from "@/components/toast";
-import { Button, Spinner } from "@/components/ui";
+import { Button, Skeleton } from "@/components/ui";
 import { Dialog } from "@/components/dialog";
 import { cn } from "@/lib/utils";
 import { pageToPath, type FileEntry } from "@/lib/editor/fs";
 import { cleanComponentHtml, wrapComponent } from "@/lib/editor/components";
+import { findLibraryComponent } from "@/lib/editor/component-library";
+import { Monitor, Tablet, Smartphone, Sparkles } from "lucide-react";
 
 export default function EditorWorkspace({ projectId }: { projectId: string }) {
   const store = useEditor();
@@ -220,6 +222,80 @@ export default function EditorWorkspace({ projectId }: { projectId: string }) {
     toast(`Inserted "${name}"`, "ok");
   }, [canvasApi, flushSave, toast]);
 
+  /** Insert a pre-made library block: markup into the page, styles/scripts into the project. */
+  const insertLibrary = useCallback(async (id: string) => {
+    const comp = findLibraryComponent(id);
+    if (!comp) return;
+    const files = storeRef.current.files;
+    const pagePath = storeRef.current.currentFile;
+    const page = files[pagePath];
+    if (!page) {
+      toast("Open a page first (e.g. index.html)", "bad");
+      return;
+    }
+    const html = wrapComponent(comp.html, comp.name);
+
+    // 1) inject the markup into the open page
+    if (storeRef.current.mode === "visual" && canvasApi) {
+      await canvasApi.rpc("insert", html, null, "end").catch(() => false);
+      await canvasApi.saveSnapshot();
+    } else {
+      const next = /<\/body>/i.test(page.content)
+        ? page.content.replace(/<\/body>/i, `${html}\n</body>`)
+        : page.content + html;
+      storeRef.current.setFileContent(pagePath, next, { dirty: true });
+    }
+
+    // 2) persist the styles into css/style.css (create it if missing)
+    const cssPath = "css/style.css";
+    const jsPath = "js/app.js";
+    let cssFile = files[cssPath];
+    // Always read fresh page content — the visual canvas may have saved the DOM (with
+    // the inserted markup) after we captured `page` above.
+    const currentPage = () => storeRef.current.files[pagePath]?.content ?? page.content;
+    /** Inject a tag into <head>; falls back to the top of <body> on headless docs. */
+    const injectHead = (tag: string) => {
+      const doc = currentPage();
+      const next = /<\/head>/i.test(doc)
+        ? doc.replace(/<\/head>/i, `${tag}\n</head>`)
+        : /<body[^>]*>/i.test(doc)
+          ? doc.replace(/<body[^>]*>/i, (m) => `${m}\n${tag}`)
+          : tag + "\n" + doc;
+      storeRef.current.setFileContent(pagePath, next, { dirty: true });
+    };
+    if (!cssFile) {
+      const bare = `<link rel="stylesheet" href="${cssPath}">`;
+      // Only skip if this exact project stylesheet is already linked
+      if (!new RegExp(`<link[^>]*href=["']${cssPath}["']`, "i").test(currentPage())) {
+        injectHead(bare);
+      }
+      cssFile = { path: cssPath, content: "", kind: "file", mime: "text/css" };
+    }
+    const cssBlock = comp.css ? `\n/* ── ${comp.name} ── */\n${comp.css}\n` : "";
+    if (!files[cssPath]) storeRef.current.pushFiles([{ ...cssFile, content: (cssFile.content || "") + cssBlock }]);
+    storeRef.current.setFileContent(cssPath, (cssFile.content || "") + cssBlock, { dirty: true });
+
+    // 3) persist the script into js/app.js (create it if missing)
+    if (comp.js) {
+      let jsFile = files[jsPath];
+      if (!jsFile) {
+        const bare = `<script src="${jsPath}" defer></script>`;
+        // Only skip if this exact project script is already linked
+        if (!new RegExp(`<script[^>]*src=["']${jsPath}["']`, "i").test(currentPage())) {
+          injectHead(bare);
+        }
+        jsFile = { path: jsPath, content: "", kind: "file", mime: "text/javascript" };
+      }
+      const jsBlock = `\n/* ── ${comp.name} ── */\n${comp.js}\n`;
+      if (!files[jsPath]) storeRef.current.pushFiles([{ ...jsFile, content: (jsFile.content || "") + jsBlock }]);
+      storeRef.current.setFileContent(jsPath, (jsFile.content || "") + jsBlock, { dirty: true });
+    }
+
+    await flushSave();
+    if (storeRef.current.mode === "visual") bumpReload();
+    toast(`Added "${comp.name}"`, "ok");
+  }, [canvasApi, flushSave, bumpReload, toast]);
+
   const exportProject = useCallback(() => {
     window.open(`/api/projects/${projectId}/export`, "_blank");
   }, [projectId]);
@@ -229,13 +305,14 @@ export default function EditorWorkspace({ projectId }: { projectId: string }) {
       refresh,
       openPage,
       insertComponent,
+      insertLibrary,
       saveAsComponent,
       bumpReload,
       setPublishOpen,
       exportProject,
       flushSave,
     }),
-    [refresh, openPage, insertComponent, saveAsComponent, bumpReload, exportProject, flushSave]
+    [refresh, openPage, insertComponent, insertLibrary, saveAsComponent, bumpReload, exportProject, flushSave]
   );
 
   // ---------- keyboard shortcuts ----------
@@ -270,8 +347,47 @@ export default function EditorWorkspace({ projectId }: { projectId: string }) {
   // ---------- render ----------
   if (loading) {
     return (
-      <div className="flex h-dvh items-center justify-center gap-3 text-ink-muted">
-        <Spinner /> Opening workspace…
+      <div className="flex h-dvh flex-col overflow-hidden bg-bg text-ink">
+        {/* skeleton top bar */}
+        <div className="flex h-12 shrink-0 items-center justify-between border-b border-line bg-surface px-3">
+          <div className="flex items-center gap-2.5">
+            <Skeleton className="size-8 rounded-lg" />
+            <div className="space-y-1.5">
+              <Skeleton className="h-3 w-36" />
+              <Skeleton className="h-2 w-20" />
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Skeleton className="hidden h-8 w-24 rounded-lg sm:block" />
+            <Skeleton className="h-8 w-24 rounded-lg" />
+            <Skeleton className="h-8 w-20 rounded-lg bg-accent/30" />
+          </div>
+        </div>
+        <div className="flex min-h-0 flex-1">
+          {/* skeleton left sidebar */}
+          <div className="hidden w-[252px] shrink-0 border-r border-line bg-surface lg:flex">
+            <div className="flex w-12 shrink-0 flex-col items-center gap-2.5 border-r border-line py-3">
+              {Array.from({ length: 9 }).map((_, i) => (
+                <Skeleton key={i} className="size-7 rounded-lg" />
+              ))}
+            </div>
+            <div className="min-w-0 flex-1 space-y-2.5 p-3">
+              <Skeleton className="h-8 w-full rounded-lg" />
+              <Skeleton className="h-16 w-full rounded-lg" />
+              <Skeleton className="h-24 w-full rounded-lg" />
+              <Skeleton className="h-12 w-full rounded-lg" />
+              <Skeleton className="h-16 w-full rounded-lg" />
+            </div>
+          </div>
+          {/* skeleton canvas */}
+          <main className="relative flex min-w-0 flex-1 items-center justify-center bg-bg">
+            <div className="flex flex-col items-center gap-3">
+              <Skeleton className="size-10 rounded-xl" />
+              <Skeleton className="h-3 w-44" />
+              <Skeleton className="h-3 w-28" />
+            </div>
+          </main>
+        </div>
       </div>
     );
   }
@@ -434,9 +550,9 @@ function TopBar({
 }) {
   const set = useEditor((s) => s.set);
   const devices = [
-    { id: "desktop", label: "🖥", title: "Desktop" },
-    { id: "tablet", label: "📱", title: "Tablet" },
-    { id: "mobile", label: "📲", title: "Mobile" },
+    { id: "desktop", icon: Monitor, title: "Desktop" },
+    { id: "tablet", icon: Tablet, title: "Tablet" },
+    { id: "mobile", icon: Smartphone, title: "Mobile" },
   ] as const;
 
   return (
@@ -481,11 +597,11 @@ function TopBar({
                 title={d.title}
                 onClick={() => set({ breakpoint: d.id })}
                 className={cn(
-                  "cursor-pointer rounded-md px-1.5 py-1 text-[13px] leading-none transition-colors",
-                  breakpoint === d.id ? "bg-accent-soft" : "opacity-55 hover:opacity-100"
+                  "cursor-pointer rounded-md px-1.5 py-1 leading-none transition-colors",
+                  breakpoint === d.id ? "bg-accent-soft text-accent" : "text-ink-muted opacity-55 hover:opacity-100"
                 )}
               >
-                {d.label}
+                <d.icon size={14} strokeWidth={1.8} />
               </button>
             ))}
           </div>
@@ -507,7 +623,7 @@ function TopBar({
               : "border-line text-ink-muted hover:bg-black/5 hover:text-ink dark:hover:bg-white/10"
           )}
         >
-          ✨ AI
+          <Sparkles size={13} strokeWidth={1.8} /> AI
         </button>
         <Button variant="primary" size="sm" onClick={onPublish}>
           Publish

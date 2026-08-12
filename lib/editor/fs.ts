@@ -108,6 +108,17 @@ export function isPageFile(path: string): boolean {
   return e === "html" && !path.startsWith("components/");
 }
 
+/**
+ * Remove junk from the very start of a document: stray literal "\n" backslash
+ * sequences (LLMs and pasted code sometimes prepend them — in HTML they render
+ * as visible text at the top of the page) plus insignificant leading whitespace.
+ */
+export function cleanDocStart(doc: string): string {
+  return doc
+    .replace(/^(?:\\n)+/g, "") // literal \n characters
+    .replace(/^[\s\uFEFF]+/, ""); // real whitespace / BOM
+}
+
 export function isInside(path: string, folder: string): boolean {
   const n = normalizePath(folder);
   if (!n) return true;

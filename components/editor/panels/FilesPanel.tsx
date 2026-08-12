@@ -11,6 +11,7 @@ import { useToast } from "@/components/toast";
 import { Button } from "@/components/ui";
 import { buildTree, dirname, extname, validatePath } from "@/lib/editor/fs";
 import { cn } from "@/lib/utils";
+import { ChevronDown, ChevronRight, FileCode, FileCode2, FileJson, File, Pencil, Plus, Trash2 } from "lucide-react";
 
 export function FilesPanel() {
   const files = useEditor((s) => s.files);
@@ -103,7 +104,7 @@ export function FilesPanel() {
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between border-b border-line px-3 py-2.5">
         <h2 className="text-[12px] font-semibold">Files</h2>
-        <Button size="sm" onClick={() => setNewOpen(true)}>＋</Button>
+        <Button size="sm" onClick={() => setNewOpen(true)}><Plus size={13} /></Button>
       </div>
       <div className="min-h-0 flex-1 overflow-y-auto p-2">
         {tree.length === 0 && <p className="px-2 py-6 text-center text-[12px] text-ink-muted">No files yet.</p>}
@@ -148,7 +149,17 @@ function TreeItem({
   const [open, setOpen] = useState(depth < 2);
   const active = node.kind === "file" && node.path === currentFile;
   const ext = extname(node.path);
-  const icon = node.kind === "folder" ? (open ? "▾" : "▸") : ext === "html" ? "🟠" : ext === "css" ? "🔵" : ext === "js" ? "🟡" : "⚪";
+  const icon = node.kind === "folder" ? (
+    open ? <ChevronDown size={12} strokeWidth={2} /> : <ChevronRight size={12} strokeWidth={2} />
+  ) : ext === "html" ? (
+    <FileCode2 size={13} strokeWidth={1.8} className="text-orange-400" />
+  ) : ext === "css" ? (
+    <FileCode size={13} strokeWidth={1.8} className="text-sky-400" />
+  ) : ext === "js" ? (
+    <FileJson size={13} strokeWidth={1.8} className="text-yellow-500" />
+  ) : (
+    <File size={13} strokeWidth={1.8} className="text-ink-muted" />
+  );
 
   if (node.kind === "folder") {
     return (
@@ -158,7 +169,7 @@ function TreeItem({
           style={{ paddingLeft: depth * 12 + 4 }}
           className="flex w-full cursor-pointer items-center gap-1.5 rounded-md py-1 text-left text-[12px] text-ink-muted hover:bg-black/5 dark:hover:bg-white/5"
         >
-          <span className="w-3 text-[9px]">{icon}</span>
+          <span className="flex w-3 shrink-0 items-center justify-center text-ink-muted">{icon}</span>
           <span className="truncate font-medium">{node.name}</span>
         </button>
         {open &&
@@ -179,12 +190,12 @@ function TreeItem({
           active ? "bg-accent-soft text-ink" : "text-ink-muted hover:bg-black/5 hover:text-ink dark:hover:bg-white/5"
         )}
       >
-        <span className="w-3 text-[8.5px]">{icon}</span>
+        <span className="flex w-3 shrink-0 items-center justify-center">{icon}</span>
         <span className="truncate font-mono">{node.name}</span>
       </button>
-      <div className="absolute right-1 top-0.5 hidden gap-0.5 group-hover:flex">
-        <button onClick={() => onRename(node.path)} title="Rename" className="cursor-pointer rounded p-0.5 text-[10px] text-ink-muted hover:bg-black/10 dark:hover:bg-white/15">✎</button>
-        <button onClick={() => onDelete(node.path)} title="Delete" className="cursor-pointer rounded p-0.5 text-[10px] text-ink-muted hover:bg-bad/20 hover:text-bad">✕</button>
+      <div className="absolute right-1 top-0.5 hidden items-center gap-0.5 group-hover:flex">
+        <button onClick={() => onRename(node.path)} title="Rename" className="cursor-pointer rounded p-1 text-ink-muted hover:bg-black/10 hover:text-ink dark:hover:bg-white/15"><Pencil size={11} /></button>
+        <button onClick={() => onDelete(node.path)} title="Delete" className="cursor-pointer rounded p-1 text-ink-muted hover:bg-bad/20 hover:text-bad"><Trash2 size={11} /></button>
       </div>
     </div>
   );

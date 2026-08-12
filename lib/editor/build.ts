@@ -4,7 +4,7 @@
 import "server-only";
 
 import { parse, type HTMLElement } from "node-html-parser";
-import { extname, isPageFile, pageToPath, pathToPage, type FileEntry } from "./fs";
+import { cleanDocStart, extname, isPageFile, pageToPath, pathToPage, type FileEntry } from "./fs";
 
 export interface PageMeta {
   path: string;
@@ -63,7 +63,7 @@ export function buildSite(
     const route = pathToPage(pf.path);
     if (!route) continue;
     result.manifest.push(pf.path);
-    const raw = pf.content || "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head><body></body></html>";
+    const raw = cleanDocStart(pf.content || "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head><body></body></html>");
     const doc = parse(raw);
     const htmlEl = doc.querySelector("html");
     if (!htmlEl) {

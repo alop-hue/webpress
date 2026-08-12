@@ -7,7 +7,25 @@ import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/http";
-import { EmptyState, Button, Spinner } from "@/components/ui";
+import { EmptyState, Button, Skeleton } from "@/components/ui";
+import {
+  Rocket,
+  Palette,
+  FileText,
+  Sprout,
+  Plus,
+  LogOut,
+  Link as LinkIcon,
+  User,
+  Bot,
+  UtensilsCrossed,
+  Building2,
+  ShoppingBag,
+  PenLine,
+  BookOpen,
+  Zap,
+  Globe,
+} from "lucide-react";
 import { useToast } from "@/components/toast";
 import { timeAgo } from "@/lib/utils";
 
@@ -60,9 +78,9 @@ export default function ProjectsPage() {
           <div className="flex items-center gap-3">
             <button
               onClick={signOut}
-              className="cursor-pointer text-[12.5px] font-medium text-ink-muted hover:text-ink"
+              className="flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[12.5px] font-medium text-ink-muted transition-colors hover:bg-black/5 hover:text-ink dark:hover:bg-white/10"
             >
-              Sign out
+              <LogOut size={14} strokeWidth={1.8} /> Sign out
             </button>
           </div>
         </div>
@@ -74,7 +92,9 @@ export default function ProjectsPage() {
             <h1 className="text-2xl font-semibold tracking-tight">Your sites</h1>
             <p className="mt-1 text-[13.5px] text-ink-muted">Create, edit, publish. Your files, your code, forever.</p>
           </div>
-          <Button variant="primary" onClick={() => router.push("/projects/new")}>New site</Button>
+          <Button variant="primary" onClick={() => router.push("/projects/new")}>
+            <Plus size={15} strokeWidth={2} /> New site
+          </Button>
         </div>
 
         {error && projects === null && (
@@ -83,7 +103,7 @@ export default function ProjectsPage() {
 
         {projects?.length === 0 && (
           <EmptyState
-            icon="🌱"
+            icon={<Sprout size={22} strokeWidth={1.7} />}
             title="Your website starts here"
             body="Start from a template, a blank canvas, or let the AI build the first version for you."
             actions={
@@ -102,8 +122,8 @@ export default function ProjectsPage() {
               onClick={() => router.push(`/editor/${p.id}`)}
               className="group cursor-pointer rounded-2xl border border-line bg-surface p-4 text-left transition-all hover:border-accent/50 hover:shadow-lg hover:shadow-black/5"
             >
-              <div className="mb-3 flex aspect-[16/9] items-center justify-center rounded-xl bg-gradient-to-br from-accent-soft to-black/[.03] dark:to-white/[.06] text-[28px]">
-                {p.template === "saas" ? "🚀" : p.template === "portfolio" ? "🎨" : "📄"}
+              <div className="mb-3 flex aspect-[16/9] items-center justify-center rounded-xl bg-gradient-to-br from-accent-soft to-black/[.03] text-accent dark:to-white/[.06]">
+                {projectIcon(p.template)}
               </div>
               <div className="flex items-center justify-between gap-2">
                 <h3 className="truncate text-[14px] font-semibold">{p.name}</h3>
@@ -112,13 +132,33 @@ export default function ProjectsPage() {
               <p className="mt-0.5 text-[12px] text-ink-muted">Edited {timeAgo(p.updated_at)}</p>
             </button>
           ))}
-          {projects === null && (
-            <div className="col-span-full flex items-center justify-center gap-2 py-20 text-ink-muted">
-              <Spinner /> Loading your sites…
-            </div>
-          )}
+          {projects === null &&
+            Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="rounded-2xl border border-line bg-surface p-4">
+                <Skeleton className="mb-3 aspect-[16/9] w-full rounded-xl" />
+                <Skeleton className="mb-2 h-3.5 w-3/4" />
+                <Skeleton className="h-3 w-1/2" />
+              </div>
+            ))}
         </div>
       </main>
     </div>
   );
+}
+
+function projectIcon(template: string): React.ReactNode {
+  const map: Record<string, React.ReactNode> = {
+    saas: <Rocket size={26} strokeWidth={1.6} />,
+    portfolio: <Palette size={26} strokeWidth={1.6} />,
+    linktree: <LinkIcon size={26} strokeWidth={1.6} />,
+    personal: <User size={26} strokeWidth={1.6} />,
+    chatbot: <Bot size={26} strokeWidth={1.6} />,
+    restaurant: <UtensilsCrossed size={26} strokeWidth={1.6} />,
+    agency: <Building2 size={26} strokeWidth={1.6} />,
+    store: <ShoppingBag size={26} strokeWidth={1.6} />,
+    blog: <PenLine size={26} strokeWidth={1.6} />,
+    docs: <BookOpen size={26} strokeWidth={1.6} />,
+    startup: <Zap size={26} strokeWidth={1.6} />,
+  };
+  return map[template] ?? <Globe size={26} strokeWidth={1.6} />;
 }

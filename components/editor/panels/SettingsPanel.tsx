@@ -10,6 +10,7 @@ import { api } from "@/lib/http";
 import { useToast } from "@/components/toast";
 import { Button, Input, Select, Switch } from "@/components/ui";
 import { ConfirmDialog } from "@/components/dialog";
+import { Download } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface AiSettings {
@@ -122,7 +123,7 @@ export function SettingsPanel() {
             <textarea value={desc} onChange={(e) => setDesc(e.target.value)} onBlur={saveProject} rows={2}
               className="w-full resize-none rounded-lg border border-line bg-surface px-3 py-2 text-[12px] text-ink outline-none focus:border-accent" />
           </label>
-          <Button size="sm" onClick={ctx.exportProject}>⭳ Export project files</Button>
+          <Button size="sm" onClick={ctx.exportProject}><Download size={12} strokeWidth={2} /> Export project files</Button>
         </Section>
 
         <Section title="AI Agent">

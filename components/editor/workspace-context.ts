@@ -9,6 +9,7 @@ export interface WorkspaceCtx {
   refresh: () => Promise<void>;
   openPage: (path: string) => void;
   insertComponent: (name: string) => Promise<void>;
+  insertLibrary: (id: string) => Promise<void>;
   saveAsComponent: () => Promise<void>;
   bumpReload: () => void;
   setPublishOpen: (open: boolean) => void;

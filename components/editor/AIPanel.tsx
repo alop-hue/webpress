@@ -11,6 +11,7 @@ import { useToast } from "@/components/toast";
 import { Button } from "@/components/ui";
 import { cn } from "@/lib/utils";
 import { diffLines, compactDiff, diffStats, type DiffRow } from "@/lib/editor/diff";
+import { Sparkles, Smartphone, ShieldCheck, Image as ImageIcon, Settings, Bot } from "lucide-react";
 
 interface Draft {
   path: string;
@@ -27,10 +28,10 @@ interface LogLine {
 }
 
 const QUICK_PROMPTS = [
-  { label: "✨ Improve this site", prompt: "Inspect the project and improve the overall design, structure and polish. Fix real issues you find.", kind: "improve" },
-  { label: "🎯 Fix the mobile layout", prompt: "Fix the mobile layout: check the responsive behavior and make the site look great on phones.", kind: "improve" },
-  { label: "🛡️ Check security & SEO", prompt: "Audit the site for security issues and SEO problems, then fix what you can.", kind: "improve" },
-  { label: "🖼 Make the hero premium", prompt: "Make the hero section look more premium and modern.", kind: "improve" },
+  { label: "Improve this site", icon: Sparkles, prompt: "Inspect the project and improve the overall design, structure and polish. Fix real issues you find.", kind: "improve" },
+  { label: "Fix the mobile layout", icon: Smartphone, prompt: "Fix the mobile layout: check the responsive behavior and make the site look great on phones.", kind: "improve" },
+  { label: "Check security & SEO", icon: ShieldCheck, prompt: "Audit the site for security issues and SEO problems, then fix what you can.", kind: "improve" },
+  { label: "Make the hero premium", icon: ImageIcon, prompt: "Make the hero section look more premium and modern.", kind: "improve" },
 ];
 
 export function AIPanel() {
@@ -127,7 +128,7 @@ export function AIPanel() {
           } else if (evt.files?.length) {
             setDrafts(evt.files);
             setRunId(evt.runId ?? null);
-            addLog(`✍️ ${evt.files.length} change(s) ready for review — review the diff and apply.`, "ok");
+            addLog(`${evt.files.length} change(s) ready for review — review the diff and apply.`, "ok");
           } else {
             addLog(evt.summary ? `✓ ${evt.summary.slice(0, 400)}` : "✓ Done", "ok");
           }
@@ -163,7 +164,9 @@ export function AIPanel() {
     <div className="flex h-full flex-col">
       <div className="flex items-center justify-between border-b border-line px-3.5 py-2.5">
         <div className="flex items-center gap-2">
-          <span className="text-[14px]">✨</span>
+          <span className="flex size-7 items-center justify-center rounded-lg bg-accent-soft text-accent">
+            <Sparkles size={14} strokeWidth={1.8} />
+          </span>
           <div>
             <div className="text-[12.5px] font-semibold leading-tight">AI Agent</div>
             <div className="text-[10px] text-ink-muted">Inspects your files, drafts changes, you approve</div>
@@ -172,16 +175,18 @@ export function AIPanel() {
         <button
           onClick={() => useEditor.setState({ leftNav: "settings" })}
           title="AI settings"
-          className="cursor-pointer rounded-md p-1.5 text-[12px] text-ink-muted transition-colors hover:bg-black/5 hover:text-ink dark:hover:bg-white/10"
+          className="cursor-pointer rounded-md p-1.5 text-ink-muted transition-colors hover:bg-black/5 hover:text-ink dark:hover:bg-white/10"
         >
-          ⚙️
+          <Settings size={14} strokeWidth={1.8} />
         </button>
       </div>
 
       <div ref={logRef} className="min-h-0 flex-1 space-y-1.5 overflow-y-auto p-3">
         {logs.length === 0 && (
           <div className="flex h-full flex-col items-center justify-center gap-2 text-center">
-            <div className="flex size-10 items-center justify-center rounded-xl bg-accent-soft text-lg">🤖</div>
+            <div className="flex size-10 items-center justify-center rounded-xl bg-accent-soft text-accent">
+              <Bot size={20} strokeWidth={1.7} />
+            </div>
             <p className="max-w-[220px] text-[12px] leading-relaxed text-ink-muted">
               Ask the agent to improve your site. Changes are drafted as diffs for your approval — nothing is applied silently.
             </p>
@@ -249,7 +254,7 @@ export function AIPanel() {
               onClick={() => run(q.prompt, q.kind)}
               className="cursor-pointer rounded-full border border-line px-2.5 py-1 text-[10.5px] text-ink-muted transition-colors hover:border-accent/50 hover:text-accent disabled:opacity-40"
             >
-              {q.label}
+              <q.icon size={11} strokeWidth={2} /> {q.label}
             </button>
           ))}
         </div>

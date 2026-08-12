@@ -9,6 +9,7 @@ import { useWorkspace } from "../workspace-context";
 import { api } from "@/lib/http";
 import { useToast } from "@/components/toast";
 import { Button, Badge, Spinner } from "@/components/ui";
+import { Zap, Globe } from "lucide-react";
 
 const SEV_TONE = { error: "bad", warning: "warn", info: "neutral" } as const;
 
@@ -83,8 +84,8 @@ export function TestsPanel() {
       <div className="border-b border-line px-3 py-2.5">
         <h2 className="text-[12px] font-semibold">Tests & checks</h2>
         <div className="mt-2 flex gap-1.5">
-          <Button size="sm" loading={staticRun} onClick={runStatic}>⚡ Static</Button>
-          <Button size="sm" variant="outline" loading={browserRun} onClick={runBrowser}>🌐 Browser</Button>
+          <Button size="sm" loading={staticRun} onClick={runStatic}><Zap size={12} strokeWidth={2} /> Static</Button>
+          <Button size="sm" variant="outline" loading={browserRun} onClick={runBrowser}><Globe size={12} strokeWidth={2} /> Browser</Button>
         </div>
         {browserMsg && <p className="mt-2 text-[10.5px] leading-relaxed text-ink-muted">{browserMsg}</p>}
       </div>

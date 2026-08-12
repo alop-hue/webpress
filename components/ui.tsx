@@ -45,6 +45,10 @@ export const Button = forwardRef<
   );
 });
 
+export function Skeleton({ className }: { className?: string }) {
+  return <div aria-hidden className={cn("wp-skeleton animate-pulse rounded-md bg-black/[.07] dark:bg-white/[.08]", className)} />;
+}
+
 export function Spinner({ className }: { className?: string }) {
   return (
     <svg className={cn("wp-spin", className)} viewBox="0 0 24 24" fill="none" aria-hidden>
@@ -168,14 +172,14 @@ export function EmptyState({
   body,
   actions,
 }: {
-  icon?: string;
+  icon?: React.ReactNode;
   title: string;
   body?: string;
   actions?: React.ReactNode;
 }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center wp-fade">
-      {icon && <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-accent-soft text-xl">{icon}</div>}
+      {icon && <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-accent-soft text-accent">{icon}</div>}
       <h3 className="text-[15px] font-semibold">{title}</h3>
       {body && <p className="mt-1.5 max-w-sm text-[13px] leading-relaxed text-ink-muted">{body}</p>}
       {actions && <div className="mt-5 flex flex-wrap items-center justify-center gap-2">{actions}</div>}

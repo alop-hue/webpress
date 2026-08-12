@@ -11,6 +11,7 @@ import { useToast } from "@/components/toast";
 import { Button, Badge } from "@/components/ui";
 import { Dialog, ConfirmDialog } from "@/components/dialog";
 import { cn, formatDate } from "@/lib/utils";
+import { Download, RotateCcw, ExternalLink, CheckCircle2 } from "lucide-react";
 
 type Stage = "idle" | "building" | "live" | "failed" | "blocked";
 
@@ -49,7 +50,7 @@ export function DeployPanel() {
       <div className="flex items-center justify-between border-b border-line px-3 py-2.5">
         <h2 className="text-[12px] font-semibold">Deploy</h2>
         <div className="flex gap-1.5">
-          <Button size="sm" variant="ghost" onClick={ctx.exportProject} title="Download the full project as files">⭳ Export</Button>
+          <Button size="sm" variant="ghost" onClick={ctx.exportProject} title="Download the full project as files"><Download size={13} strokeWidth={2} /> Export</Button>
           <Button size="sm" variant="primary" onClick={() => ctx.setPublishOpen(true)}>Publish</Button>
         </div>
       </div>
@@ -65,8 +66,8 @@ export function DeployPanel() {
             </div>
             <p className="mt-1.5 truncate font-mono text-[11px] text-accent">{latest.url}</p>
             <div className="mt-2 flex gap-1.5">
-              <a href={latest.url ?? "#"} target="_blank" rel="noreferrer" className="cursor-pointer rounded-md bg-accent px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-accent-strong">
-                Open site
+              <a href={latest.url ?? "#"} target="_blank" rel="noreferrer" className="flex cursor-pointer items-center gap-1 rounded-md bg-accent px-2.5 py-1.5 text-[11px] font-semibold text-white hover:bg-accent-strong">
+                Open site <ExternalLink size={11} strokeWidth={2} />
               </a>
               <button
                 onClick={() => navigator.clipboard.writeText(latest.url ?? "").then(() => toast("Link copied", "ok"))}
@@ -100,8 +101,8 @@ export function DeployPanel() {
                   {d.url.replace(/^https?:\/\//, "")}
                 </a>
                 {d.status === "live" && deployments.length > 1 && (
-                  <button onClick={() => setRollback({ id: d.id, version: d.version })} title="Roll back to this version" className="cursor-pointer text-[10px] text-ink-muted hover:text-accent">
-                    ↺
+                  <button onClick={() => setRollback({ id: d.id, version: d.version })} title="Roll back to this version" className="flex cursor-pointer items-center text-ink-muted hover:text-accent">
+                    <RotateCcw size={11} strokeWidth={2} />
                   </button>
                 )}
               </div>
@@ -171,7 +172,7 @@ export function PublishDialog({ projectId, open, onClose }: { projectId: string;
       }
       setUrl(body.url);
       setStage("live");
-      setLogs(["Building… ✓", "Testing… ✓", "Uploading… ✓", "Deploying… ✓", "Live 🎉"]);
+      setLogs(["Building… ✓", "Testing… ✓", "Uploading… ✓", "Deploying… ✓", "Live ✓"]);
       toast("Site is live!", "ok");
       await ctx.refresh();
     } catch (e: any) {
@@ -260,7 +261,7 @@ export function PublishDialog({ projectId, open, onClose }: { projectId: string;
       {stage === "live" && (
         <div>
           <div className="flex items-center gap-2">
-            <span className="size-2.5 rounded-full bg-ok" />
+            <CheckCircle2 size={16} strokeWidth={2} className="text-[color:var(--success)]" />
             <p className="text-[14px] font-semibold">Your site is live</p>
           </div>
           <p className="mt-2 rounded-lg border border-line bg-bg px-3 py-2.5 font-mono text-[13px] text-accent">{url}</p>

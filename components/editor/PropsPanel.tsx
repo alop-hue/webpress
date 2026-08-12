@@ -7,6 +7,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import { useEditor } from "./store";
 import { cn } from "@/lib/utils";
 import type { StyleRule } from "@/lib/editor/styling";
+import { MousePointerClick, Copy, Trash2, Puzzle, Pencil } from "lucide-react";
 
 export interface CanvasApi {
   rpc: (method: string, ...args: unknown[]) => Promise<any>;
@@ -84,7 +85,9 @@ export function PropsPanel({ onSaveAsComponent }: { onSaveAsComponent: () => voi
   if (!sel) {
     return (
       <div className="flex h-full flex-col items-center justify-center gap-3 p-6 text-center">
-        <div className="flex size-10 items-center justify-center rounded-xl bg-accent-soft text-lg">👆</div>
+        <div className="flex size-10 items-center justify-center rounded-xl bg-accent-soft text-accent">
+          <MousePointerClick size={20} strokeWidth={1.7} />
+        </div>
         <p className="text-[12.5px] leading-relaxed text-ink-muted">
           Select any element on the canvas to edit its content, styles, spacing and responsive behavior.
         </p>
@@ -167,8 +170,8 @@ export function PropsPanel({ onSaveAsComponent }: { onSaveAsComponent: () => voi
         <div className="flex items-center gap-0.5">
           <MiniBtn label="↑" title="Move up" onClick={() => run(() => canvas!.rpc("move", sel.path, "up"))} />
           <MiniBtn label="↓" title="Move down" onClick={() => run(() => canvas!.rpc("move", sel.path, "down"))} />
-          <MiniBtn label="⧉" title="Duplicate" onClick={() => run(() => canvas!.rpc("duplicate", sel.path))} />
-          <MiniBtn danger label="✕" title="Delete" onClick={() => run(() => canvas!.rpc("delete", sel.path))} />
+          <MiniBtn title="Duplicate" onClick={() => run(() => canvas!.rpc("duplicate", sel.path))} icon={<Copy size={13} />} />
+          <MiniBtn danger title="Delete" onClick={() => run(() => canvas!.rpc("delete", sel.path))} icon={<Trash2 size={13} />} />
         </div>
       </div>
 
@@ -188,7 +191,7 @@ export function PropsPanel({ onSaveAsComponent }: { onSaveAsComponent: () => voi
               className="w-full cursor-pointer rounded-lg border border-line bg-surface px-3 py-2 text-left text-[12.5px] font-medium hover:border-accent/50"
               onClick={() => run(() => canvas!.rpc("focus-text", sel.path))}
             >
-              ✏️ Edit text inline
+              <Pencil size={11} strokeWidth={2} /> Edit text inline
             </button>
           )}
           {sel.tag === "a" && (
@@ -342,9 +345,9 @@ export function PropsPanel({ onSaveAsComponent }: { onSaveAsComponent: () => voi
 
       {section("Actions", "Actions", (
         <div className="flex flex-wrap gap-1.5">
-          <ActionBtn onClick={() => run(() => canvas!.rpc("duplicate", sel.path))}>⧉ Duplicate</ActionBtn>
-          <ActionBtn danger onClick={() => run(() => canvas!.rpc("delete", sel.path))}>🗑 Delete</ActionBtn>
-          <ActionBtn onClick={onSaveAsComponent}>🧩 Save as component</ActionBtn>
+          <ActionBtn onClick={() => run(() => canvas!.rpc("duplicate", sel.path))}><Copy size={12} strokeWidth={2} /> Duplicate</ActionBtn>
+          <ActionBtn danger onClick={() => run(() => canvas!.rpc("delete", sel.path))}><Trash2 size={12} strokeWidth={2} /> Delete</ActionBtn>
+          <ActionBtn onClick={onSaveAsComponent}><Puzzle size={12} strokeWidth={2} /> Save as component</ActionBtn>
           {selClasses.length > 0 && (
             <span className="text-[10.5px] leading-relaxed text-ink-muted">
               Classes: {selClasses.map((c) => c.startsWith("wp-el-") ? <b key={c} className="text-accent">{c}</b> : c).join(", ")}
@@ -356,17 +359,18 @@ export function PropsPanel({ onSaveAsComponent }: { onSaveAsComponent: () => voi
   );
 }
 
-function MiniBtn({ label, title, onClick, danger }: { label: string; title: string; onClick: () => void; danger?: boolean }) {
+function MiniBtn({ label, title, onClick, danger, icon }: { label?: string; title: string; onClick: () => void; danger?: boolean; icon?: React.ReactNode }) {
   return (
     <button
       title={title}
       aria-label={title}
       onClick={onClick}
       className={cn(
-        "cursor-pointer rounded-md px-1.5 py-1 text-[12px] hover:bg-black/5 dark:hover:bg-white/10",
+        "flex cursor-pointer items-center gap-1 rounded-md px-1.5 py-1 text-[12px] hover:bg-black/5 dark:hover:bg-white/10",
         danger ? "text-bad" : "text-ink-muted"
       )}
     >
+      {icon}
       {label}
     </button>
   );
