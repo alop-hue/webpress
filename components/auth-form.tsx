@@ -38,7 +38,19 @@ function AuthForm({ mode }: { mode: "login" | "signup" }) {
       }
       router.refresh();
     } catch (err: any) {
-      toast(`Sign-in failed: ${err?.message ?? "unknown error"}`, "bad");
+      // Surface a clear, actionable message instead of the raw Supabase error
+      const code: string = err?.code ?? "";
+      const msg =
+        code === "invalid_credentials"
+          ? mode === "signup"
+            ? "An account with this email already exists — try signing in instead."
+            : "Incorrect email or password — double-check both and try again."
+          : code === "email_not_confirmed"
+          ? "Please confirm your email first — check your inbox for the confirmation link."
+          : code === "over_request_rate_limit"
+          ? "Too many attempts — wait a minute and try again."
+          : err?.message ?? "unknown error";
+      toast(msg, "bad");
     } finally {
       setLoading(false);
     }
