@@ -4,7 +4,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getAuthedProject } from "@/lib/api/guard";
 import { AppError, json, errorResponse } from "@/lib/errors";
 import { runStaticChecks, summarize, type CheckResult } from "@/lib/qa/static";
-import { loadProjectSnapshot } from "@/lib/qa/runner";
+import { loadProjectSnapshot } from "@/lib/qa/snapshot";
 import { buildSite } from "@/lib/editor/build";
 import { z } from "zod";
 import { zipSync, strToU8 } from "fflate";

@@ -1,0 +1,33 @@
+import { chromium } from 'playwright-core'
+const b = await chromium.launch()
+const ctx = await b.newContext()
+const p = await ctx.newPage()
+const errs = []
+p.on('response', async r => { if (r.status() >= 400) { let body = ''; try { body = (await r.text()).slice(0, 300) } catch {} errs.push(r.status() + ' ' + r.url() + ' :: ' + body) } })
+p.setDefaultTimeout(25000)
+await p.goto('https://webpress-ashy.vercel.app/signup')
+await p.getByPlaceholder('Your name').fill('Prod Dbg')
+await p.getByPlaceholder('Email').fill(`pdbg-${Date.now()}@webpress.test`)
+await p.getByPlaceholder(/Password/).fill('test-password-123')
+await p.getByRole('button', { name: 'Create account' }).click()
+await p.waitForURL('**/projects**', { timeout: 40000 })
+await p.getByRole('button', { name: 'New site' }).click()
+await p.getByPlaceholder(/e\.g\. My Studio/).fill('Dbg Docs')
+await p.getByRole('button', { name: /Documentation/ }).click()
+await p.getByRole('button', { name: 'Create site' }).click()
+await p.waitForURL('**/editor/**', { timeout: 40000 })
+await p.waitForTimeout(4000)
+await p.getByRole('button', { name: /Publish/ }).first().click()
+await p.waitForTimeout(1000)
+await p.getByRole('button', { name: 'Start publish' }).click()
+for (let i = 0; i < 25; i++) {
+  await p.waitForTimeout(2000)
+  const body = await p.evaluate(() => document.body.innerText)
+  const m = body.match(/\/p\/[A-Za-z0-9]+/)
+  if (m) { console.log('URL FOUND:', m[0]); break }
+  const fail = body.match(/Deployment failed[\s\S]{0,220}/i)
+  if (fail && i % 3 === 2) console.log('FAIL MSG:', JSON.stringify(fail[0].slice(0, 200)))
+}
+console.log('HTTP ERRORS:')
+errs.slice(0, 5).forEach(e => console.log(' -', e))
+await b.close()

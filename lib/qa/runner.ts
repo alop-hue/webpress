@@ -3,26 +3,9 @@ import "server-only";
 import { createClient } from "@/lib/supabase/server";
 import { runStaticChecks, summarize, type CheckResult } from "./static";
 import { runBrowserChecks } from "./playwright";
-import type { FileEntry } from "@/lib/editor/fs";
+import { loadProjectSnapshot } from "./snapshot";
 
-export interface ProjectSnapshot {
-  files: FileEntry[];
-  pages: { path: string; title: string; description: string; og_image: string }[];
-  settings: { siteName?: string; favicon?: string; analytics?: boolean };
-}
-
-export async function loadProjectSnapshot(projectId: string): Promise<ProjectSnapshot> {
-  const supabase = await createClient();
-  const [filesRes, pagesRes, projRes] = await Promise.all([
-    supabase.from("project_files").select("path,content,kind,mime").eq("project_id", projectId),
-    supabase.from("pages").select("path,title,description,og_image").eq("project_id", projectId),
-    supabase.from("projects").select("settings").eq("id", projectId).single(),
-  ]);
-  const files = (filesRes.data ?? []).filter((f: any) => f.kind === "file") as FileEntry[];
-  const pages = (pagesRes.data ?? []) as ProjectSnapshot["pages"];
-  const settings = (projRes.data?.settings ?? {}) as ProjectSnapshot["settings"];
-  return { files, pages, settings };
-}
+export { loadProjectSnapshot, type ProjectSnapshot } from "./snapshot";
 
 export async function runStaticAndStore(projectId: string): Promise<CheckResult[]> {
   const supabase = await createClient();

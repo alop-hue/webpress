@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { api } from "@/lib/http";
 import { Button, Input, Textarea, Spinner, Badge } from "@/components/ui";
@@ -26,11 +26,18 @@ export default function NewProjectPage() {
   const [template, setTemplate] = useState<string>(params.get("blank") ? "blank" : "");
   const [busy, setBusy] = useState(false);
 
+  const templateRef = useRef(template);
+  templateRef.current = template;
+
   useEffect(() => {
     api<{ templates: Template[] }>("/api/templates")
       .then((r) => {
         setTemplates(r.templates);
-        if (!params.get("blank") && r.templates.length) setTemplate(r.templates[0].id);
+        // only auto-select when the user hasn't already picked one (a slow fetch
+        // must not clobber a deliberate selection)
+        if (!params.get("blank") && r.templates.length && !templateRef.current) {
+          setTemplate(r.templates[0].id);
+        }
       })
       .catch(() => setTemplates([]));
   }, []);
