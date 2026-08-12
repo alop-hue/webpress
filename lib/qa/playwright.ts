@@ -1,3 +1,6 @@
+/**
+ * Browser QA: renders pages in Playwright, collects console/page errors and viewport layout issues.
+ */
 import "server-only";
 
 import { chromium, type Browser, type Page } from "playwright-core";

@@ -1,3 +1,6 @@
+/**
+ * Light / dark / system theme switching.
+ */
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";

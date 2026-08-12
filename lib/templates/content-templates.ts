@@ -1,3 +1,6 @@
+/**
+ * Content templates: Blog, Documentation, Startup.
+ */
 import type { TemplateDef } from "./index";
 
 const blogCss = String.raw`/* Blog — Webpress template */

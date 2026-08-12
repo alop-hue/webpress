@@ -1,3 +1,6 @@
+/**
+ * Reusable components: list, insert, delete.
+ */
 "use client";
 
 import { useState } from "react";

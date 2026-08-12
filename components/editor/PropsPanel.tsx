@@ -1,3 +1,6 @@
+/**
+ * Contextual properties panel for the selected element (content, style, spacing, responsive, actions).
+ */
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";

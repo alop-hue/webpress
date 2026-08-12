@@ -1,3 +1,6 @@
+/**
+ * Public template catalog for the new-site wizard.
+ */
 import "server-only";
 
 import { TEMPLATES } from "@/lib/templates";

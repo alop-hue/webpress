@@ -1,3 +1,6 @@
+/**
+ * Template registry: aggregates all template modules into the TEMPLATES catalog.
+ */
 import type { FileEntry } from "@/lib/editor/fs";
 import { LINKTREE_TEMPLATE, PERSONAL_TEMPLATE, CHATBOT_TEMPLATE } from "./personal-templates";
 import { RESTAURANT_TEMPLATE, AGENCY_TEMPLATE, STORE_TEMPLATE } from "./business-templates";

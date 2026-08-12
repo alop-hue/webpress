@@ -1,3 +1,6 @@
+/**
+ * React context exposing editor actions (refresh, open page, insert component…) to panels.
+ */
 "use client";
 
 import { createContext, useContext } from "react";

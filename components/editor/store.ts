@@ -1,3 +1,6 @@
+/**
+ * Zustand store for the editor: files, pages, selection, style rules, and UI state.
+ */
 "use client";
 
 import { create } from "zustand";

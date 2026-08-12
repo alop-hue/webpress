@@ -1,3 +1,6 @@
+/**
+ * Analytics dashboard data for the project owner.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

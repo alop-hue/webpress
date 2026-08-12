@@ -1,3 +1,6 @@
+/**
+ * AI chat panel: streams agent runs, shows sub-agent activity, and lets the user review/apply drafts.
+ */
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";

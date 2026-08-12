@@ -1,3 +1,6 @@
+/**
+ * Visit analytics for the project's published sites.
+ */
 "use client";
 
 import { useEffect, useState } from "react";

@@ -1,3 +1,6 @@
+/**
+ * Reusable component CRUD (unique per project + name).
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

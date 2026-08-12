@@ -1,3 +1,6 @@
+/**
+ * Deployment history for a project.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

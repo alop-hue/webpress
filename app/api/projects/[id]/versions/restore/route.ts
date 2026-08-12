@@ -1,3 +1,6 @@
+/**
+ * Restore a project's files from a previous version snapshot.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

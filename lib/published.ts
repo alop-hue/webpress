@@ -1,3 +1,6 @@
+/**
+ * Server helpers for published sites: load by public code, extract <head> metadata for SEO, normalize routes.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

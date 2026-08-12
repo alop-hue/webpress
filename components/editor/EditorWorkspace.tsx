@@ -1,3 +1,6 @@
+/**
+ * Editor shell: hydration, debounced autosave, visual undo, keyboard shortcuts, and panel layout.
+ */
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";

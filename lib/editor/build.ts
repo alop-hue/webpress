@@ -1,3 +1,6 @@
+/**
+ * Publish build: transforms project files into multi-page static HTML with SEO metadata, inlined CSS/JS, absolute internal links, sitemap + robots.
+ */
 import "server-only";
 
 import { parse, type HTMLElement } from "node-html-parser";

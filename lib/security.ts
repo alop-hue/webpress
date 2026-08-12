@@ -1,3 +1,6 @@
+/**
+ * Security helpers: in-process rate limiting, HMAC signing, secret/dangerous-JS scanning, head-injection validation.
+ */
 import "server-only";
 
 import { createHash, createHmac } from "crypto";

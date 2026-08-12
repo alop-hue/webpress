@@ -1,3 +1,6 @@
+/**
+ * Single project: get, update (name/description/settings/status), or delete.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

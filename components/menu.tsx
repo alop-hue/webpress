@@ -1,3 +1,6 @@
+/**
+ * Dropdown menu component.
+ */
 "use client";
 
 import { useEffect, useRef, useState } from "react";

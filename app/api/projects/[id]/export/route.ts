@@ -1,3 +1,6 @@
+/**
+ * Downloads the whole project as a zip of its real files.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

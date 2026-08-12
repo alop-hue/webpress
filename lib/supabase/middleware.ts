@@ -1,3 +1,6 @@
+/**
+ * Session refresh + auth-redirect logic used by the edge middleware.
+ */
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 

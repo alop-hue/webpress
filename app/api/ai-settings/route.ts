@@ -1,3 +1,6 @@
+/**
+ * AI settings: provider/model/permissions plus encrypted API-key storage.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

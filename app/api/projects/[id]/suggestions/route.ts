@@ -1,3 +1,6 @@
+/**
+ * Improvement suggestions: list them and update their status.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

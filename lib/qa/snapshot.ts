@@ -1,3 +1,6 @@
+/**
+ * Loads a project snapshot (files/pages/settings) without importing playwright, so deploy bundles stay lean.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

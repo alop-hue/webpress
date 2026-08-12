@@ -1,3 +1,6 @@
+/**
+ * Personal site templates: Link-in-Bio, Resume, AI Chatbot.
+ */
 import type { TemplateDef } from "./index";
 
 const linktreeCss = String.raw`/* Link in Bio — Webpress template */

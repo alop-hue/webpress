@@ -1,3 +1,6 @@
+/**
+ * Virtual file system helpers: path utilities, page↔file mapping, folder tree building.
+ */
 export interface FileEntry {
   path: string; // normalized, no leading slash: "index.html", "css/style.css", "assets/"
   content: string;

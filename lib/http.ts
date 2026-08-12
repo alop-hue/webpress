@@ -1,3 +1,6 @@
+/**
+ * Client-side fetch wrapper: JSON headers, same-origin credentials, unified error surfacing.
+ */
 import { AppError } from "./errors";
 
 export async function api<T = unknown>(url: string, init?: RequestInit): Promise<T> {

@@ -1,3 +1,6 @@
+/**
+ * Main AI agent: builds context, spawns inspection sub-agents, and runs a tool loop that produces user-approved draft edits.
+ */
 import "server-only";
 
 import { complete, type ChatMessage, type ToolCall, type ToolSpec } from "./providers";

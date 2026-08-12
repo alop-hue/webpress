@@ -1,3 +1,6 @@
+/**
+ * Left sidebar: rail navigation and the active panel (pages/components/assets/files/history/tests/deploy/settings/analytics).
+ */
 "use client";
 
 import { useEditor } from "./store";

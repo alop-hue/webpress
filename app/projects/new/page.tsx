@@ -1,3 +1,6 @@
+/**
+ * New project wizard page.
+ */
 import { Suspense } from "react";
 import NewProjectPage from "@/components/new-project";
 

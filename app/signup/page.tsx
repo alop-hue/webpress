@@ -1,3 +1,6 @@
+/**
+ * Signup page (renders AuthForm in signup mode).
+ */
 import AuthPage from "@/components/auth-form";
 
 export const metadata = { title: "Create account" };

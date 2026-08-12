@@ -1,3 +1,6 @@
+/**
+ * Dialog and ConfirmDialog components.
+ */
 "use client";
 
 import { useEffect, useRef, useState } from "react";

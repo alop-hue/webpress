@@ -1,3 +1,6 @@
+/**
+ * Runs browser QA (Playwright) against the project's rendered pages.
+ */
 import "server-only";
 
 import { getAuthedProject } from "@/lib/api/guard";

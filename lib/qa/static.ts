@@ -1,3 +1,6 @@
+/**
+ * Deterministic static quality checks: SEO, accessibility, links, performance, security — with optional auto-fixes.
+ */
 import "server-only";
 
 import { parse, type HTMLElement } from "node-html-parser";

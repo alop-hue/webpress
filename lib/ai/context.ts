@@ -1,3 +1,6 @@
+/**
+ * Builds the structured project context (files, pages, components, design tokens) sent to the agent.
+ */
 import type { AgentSnapshot } from "./agent";
 
 /** Structured project context for the agent — design system, files, routes. */

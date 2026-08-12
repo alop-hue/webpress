@@ -1,3 +1,6 @@
+/**
+ * Project settings: name, description, analytics toggle, danger zone.
+ */
 "use client";
 
 import { useEffect, useState } from "react";

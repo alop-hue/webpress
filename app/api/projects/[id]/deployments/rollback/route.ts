@@ -1,3 +1,6 @@
+/**
+ * Rollback: promote a previous live deployment back to live.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

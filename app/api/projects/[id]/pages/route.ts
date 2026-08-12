@@ -1,3 +1,6 @@
+/**
+ * Page metadata CRUD; keeps the backing HTML file in sync when pages are created or deleted.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

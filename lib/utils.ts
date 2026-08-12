@@ -1,3 +1,6 @@
+/**
+ * Small shared utilities: classnames, time/date formatting, slugify, random codes, clamp, truncate.
+ */
 export function cn(...inputs: Array<string | false | null | undefined>) {
   return inputs.filter(Boolean).join(" ");
 }

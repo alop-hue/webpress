@@ -1,3 +1,6 @@
+/**
+ * Projects dashboard UI: create, open, delete.
+ */
 "use client";
 
 import { useEffect, useState } from "react";

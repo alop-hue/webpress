@@ -1,3 +1,6 @@
+/**
+ * Visual editor: sandboxed iframe rendering the live page, bridged to the canvas agent via postMessage.
+ */
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";

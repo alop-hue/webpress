@@ -1,3 +1,6 @@
+/**
+ * AI provider layer: resolves credentials and normalizes OpenAI-compatible and Anthropic APIs into one interface.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

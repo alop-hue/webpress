@@ -1,3 +1,6 @@
+/**
+ * Serves a published site's sitemap.xml.
+ */
 import { getPublishedSite } from "@/lib/published";
 
 export const revalidate = 30;

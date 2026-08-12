@@ -1,3 +1,6 @@
+/**
+ * Publish pipeline: quality gate → static build → zip upload → atomic published_sites snapshot.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

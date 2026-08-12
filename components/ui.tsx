@@ -1,3 +1,6 @@
+/**
+ * Primitive UI kit: Button, Input, Spinner, and shared tokens used across the app.
+ */
 "use client";
 
 import { forwardRef } from "react";

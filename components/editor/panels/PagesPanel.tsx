@@ -1,3 +1,6 @@
+/**
+ * Pages management: create, rename, duplicate, delete, set home.
+ */
 "use client";
 
 import { useEffect, useState } from "react";

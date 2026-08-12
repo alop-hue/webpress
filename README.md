@@ -20,6 +20,29 @@ A production-ready WordPress alternative: visually build modern websites, drop i
 - Supabase (Postgres + Auth + Storage)
 - CodeMirror 6 (editor), node-html-parser (static analysis), fflate (zip export), Playwright (browser QA)
 
+## Documentation
+
+- **[Architecture](docs/ARCHITECTURE.md)** — system overview, data flow, key design decisions
+- **[Code map](docs/CODE-MAP.md)** — a file-by-file walkthrough of every module
+- **[Setup](docs/SETUP.md)** — install, environment variables, database setup
+- **[Database](docs/DATABASE.md)** — tables, row-level security, storage buckets
+- **[API](docs/API.md)** — every route endpoint and its contract
+- **[Editor](docs/EDITOR.md)** — visual canvas, styling system, code mode, shortcuts
+- **[AI agents](docs/AI-AGENTS.md)** — agent flow, tools, sub-agents, safety model
+- **[Publishing](docs/PUBLISHING.md)** — the publish pipeline and public `/p/[code]` sites
+- **[Templates](docs/TEMPLATES.md)** — the template library and how to add templates
+
+## Project structure
+
+```
+app/            Next.js routes: API (app/api), pages, public sites (app/p)
+components/     React UI — components/editor/ is the editor workspace
+lib/            Framework-free core: editor, AI, QA, templates, supabase, security
+db/migrations/  Postgres schema for Supabase (0001_init.sql)
+docs/           This documentation set
+tests/          Unit (Vitest) + E2E (Playwright)
+```
+
 ## Getting started
 
 ```bash

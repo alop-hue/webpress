@@ -1,3 +1,6 @@
+/**
+ * QA dashboard: run checks, view results.
+ */
 "use client";
 
 import { useState } from "react";

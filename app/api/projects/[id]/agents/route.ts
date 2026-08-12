@@ -1,3 +1,6 @@
+/**
+ * AI agent endpoint: streams an agent run as Server-Sent Events (logs, sub-agent status, drafts).
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

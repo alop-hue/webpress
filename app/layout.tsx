@@ -1,3 +1,6 @@
+/**
+ * Root layout: global fonts, theme provider, and the toast provider (mounted here so toasts work on every page).
+ */
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";

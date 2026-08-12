@@ -1,3 +1,6 @@
+/**
+ * Projects collection: list the signed-in user's projects or create a new one (optionally seeded from a template).
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

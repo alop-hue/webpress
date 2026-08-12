@@ -1,3 +1,6 @@
+/**
+ * AES-256-GCM encryption for secrets (e.g. stored AI API keys), keyed by WEBPRESS_MASTER_KEY.
+ */
 import "server-only";
 
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from "crypto";

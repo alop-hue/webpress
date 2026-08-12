@@ -1,3 +1,6 @@
+/**
+ * Editor page: verifies auth, loads the project, and mounts the EditorWorkspace.
+ */
 import EditorWorkspace from "@/components/editor/EditorWorkspace";
 
 export const metadata = { title: "Editor" };

@@ -1,3 +1,6 @@
+/**
+ * Public homepage of a published site — renders the stored HTML snapshot with SEO metadata, no login required.
+ */
 import { getPublishedSite, extractHead } from "@/lib/published";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";

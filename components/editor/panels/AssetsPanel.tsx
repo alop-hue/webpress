@@ -1,3 +1,6 @@
+/**
+ * Assets: upload, list, copy URL, delete.
+ */
 "use client";
 
 import { useRef, useState } from "react";

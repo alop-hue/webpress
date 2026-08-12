@@ -1,3 +1,6 @@
+/**
+ * AppError and consistent JSON/error responses for API routes.
+ */
 export class AppError extends Error {
   code: string;
   status: number;

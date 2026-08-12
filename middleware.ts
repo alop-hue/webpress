@@ -1,3 +1,6 @@
+/**
+ * Edge middleware: refreshes the Supabase session on every request and redirects unauthenticated visitors away from /projects and /editor (logic in lib/supabase/middleware.ts).
+ */
 import { updateSession } from "@/lib/supabase/middleware";
 import type { NextRequest } from "next/server";
 

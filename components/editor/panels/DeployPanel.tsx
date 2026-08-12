@@ -1,3 +1,6 @@
+/**
+ * Deploy dashboard: publish, history, rollback, export, analytics.
+ */
 "use client";
 
 import { useState } from "react";

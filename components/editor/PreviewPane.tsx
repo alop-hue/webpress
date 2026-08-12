@@ -1,3 +1,6 @@
+/**
+ * Non-editable live preview of the current page.
+ */
 "use client";
 
 import { useMemo } from "react";

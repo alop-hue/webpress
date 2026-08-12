@@ -1,3 +1,6 @@
+/**
+ * Public analytics beacon: anonymous, rate-limited visit events for published sites.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

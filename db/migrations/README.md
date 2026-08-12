@@ -1,10 +1,15 @@
 # Database
 
-Webpress uses Supabase (Postgres). Apply these tables in the Supabase dashboard SQL editor, or via the CLI:
+Webpress uses Supabase (Postgres). The complete schema (tables, row-level
+security, storage buckets, grants) lives in **`0001_init.sql`** in this folder.
+Apply it in the Supabase dashboard SQL editor, or via the CLI:
 
 ```bash
 pnpm db:migrate
 ```
+
+`0001_init.sql` is safe to re-run (tables use `if not exists` and every
+policy is guarded with `drop policy if exists`).
 
 ## Schema
 

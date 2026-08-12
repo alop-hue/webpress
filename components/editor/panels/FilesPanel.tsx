@@ -1,3 +1,6 @@
+/**
+ * File explorer for code mode: create folders/files, rename, delete.
+ */
 "use client";
 
 import { useEffect, useMemo, useState } from "react";

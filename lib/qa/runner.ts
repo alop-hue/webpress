@@ -1,3 +1,6 @@
+/**
+ * Runs static/browser checks and persists results + improvement suggestions.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

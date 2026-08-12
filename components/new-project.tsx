@@ -1,3 +1,6 @@
+/**
+ * New site wizard: project name + template picker.
+ */
 "use client";
 
 import { useEffect, useRef, useState } from "react";

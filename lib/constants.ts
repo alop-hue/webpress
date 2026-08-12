@@ -1,3 +1,6 @@
+/**
+ * Shared constants: app metadata, breakpoints, site-code alphabet, editor attribute names, AI provider registry.
+ */
 export const APP_NAME = "Webpress";
 export const APP_TAGLINE = "The modern WordPress alternative";
 

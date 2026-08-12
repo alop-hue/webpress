@@ -1,3 +1,6 @@
+/**
+ * Version history: preview, compare, restore.
+ */
 "use client";
 
 import { useState } from "react";

@@ -1,3 +1,6 @@
+/**
+ * CodeMirror code editor with tabs, formatting, and autosave.
+ */
 "use client";
 
 import { useEffect, useRef } from "react";

@@ -1,3 +1,6 @@
+/**
+ * Applies the approved draft edits of an agent run and creates a version.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

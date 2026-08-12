@@ -1,3 +1,6 @@
+/**
+ * Runs static QA checks and stores the results, syncing improvement suggestions.
+ */
 import "server-only";
 
 import { getAuthedProject } from "@/lib/api/guard";

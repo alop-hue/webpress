@@ -1,3 +1,6 @@
+/**
+ * Asset metadata CRUD plus storage operations against the assets bucket.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

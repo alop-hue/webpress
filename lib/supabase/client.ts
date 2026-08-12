@@ -1,3 +1,6 @@
+/**
+ * Browser (client-side) Supabase client using the anon key.
+ */
 import { createBrowserClient } from "@supabase/ssr";
 
 export function createClient() {

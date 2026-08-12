@@ -1,3 +1,6 @@
+/**
+ * Business templates: Restaurant (multi-page), Agency, Store.
+ */
 import type { TemplateDef } from "./index";
 
 const restaurantCss = String.raw`/* Restaurant — Webpress template */

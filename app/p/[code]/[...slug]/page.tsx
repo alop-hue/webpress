@@ -1,3 +1,6 @@
+/**
+ * Public sub-page of a published site (e.g. /p/abc123/about).
+ */
 import { getPublishedSite, extractHead, normalizeRoute } from "@/lib/published";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";

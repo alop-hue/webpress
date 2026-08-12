@@ -1,3 +1,6 @@
+/**
+ * Toast notifications + ToastProvider (mounted in the root layout).
+ */
 "use client";
 
 import { createContext, useCallback, useContext, useRef, useState } from "react";

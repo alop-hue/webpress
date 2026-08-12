@@ -1,3 +1,6 @@
+/**
+ * Project files: list all, bulk-save, and single-file autosave against project_files.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

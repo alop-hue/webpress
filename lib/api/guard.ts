@@ -1,3 +1,6 @@
+/**
+ * API route auth guard: resolves the signed-in user and their owned project, else 401/404.
+ */
 import "server-only";
 
 import { createClient } from "@/lib/supabase/server";

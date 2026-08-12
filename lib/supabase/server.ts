@@ -1,3 +1,6 @@
+/**
+ * Server Supabase client bound to request cookies; user/profile helpers.
+ */
 import "server-only";
 
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
