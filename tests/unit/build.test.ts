@@ -23,7 +23,7 @@ describe("buildSite", () => {
     expect(doc.querySelector("title")?.textContent).toBe("Home — Acme");
   });
 
-  it("injects SEO meta, canonical, viewport, lang and css/js links", () => {
+  it("injects SEO meta, canonical, viewport, lang and inlines css/js", () => {
     const built = buildSite(files, pages, {}, "Ab12cd", "https://wp.example.com");
     const doc = parse(built.pages["/about"]);
     expect(doc.querySelector("html")?.getAttribute("lang")).toBe("en");
@@ -31,10 +31,38 @@ describe("buildSite", () => {
     expect(doc.querySelector('meta[property="og:title"]')?.getAttribute("content")).toBe("About — Acme");
     expect(doc.querySelector('meta[name="viewport"]')).toBeTruthy();
     expect(doc.querySelector('link[rel="canonical"]')?.getAttribute("href")).toBe("https://wp.example.com/p/Ab12cd/about");
-    const links = doc.querySelectorAll("link[rel=stylesheet]").map((l) => l.getAttribute("href"));
-    expect(links).toContain("../css/style.css");
-    const scripts = doc.querySelectorAll("script[src]").map((s) => s.getAttribute("src"));
-    expect(scripts).toContain("../js/app.js");
+    // project css/js are inlined (no relative links that would 404 on /p/[code])
+    expect(doc.querySelectorAll("link[rel=stylesheet]")).toHaveLength(0);
+    const style = doc.querySelector("style[data-webpress=inline]");
+    expect(style?.textContent).toContain("body{color:#000}");
+    const script = doc.querySelector("script[data-webpress=inline]");
+    expect(script?.textContent).toContain("console.log(1)");
+  });
+
+  it("rewrites internal relative links to absolute /p/[code] paths", () => {
+    const filesWithLinks = [
+      { path: "index.html", kind: "file" as const, content: `<html><head></head><body><a href="menu.html">Menu</a><a href="./about.html#team">About</a><a href="https://ext.example/x">Ext</a><a href="#top">Top</a><img src="img/logo.png"><a href="mailto:hi@x.com">Mail</a></body></html>` },
+      { path: "menu.html", kind: "file" as const, content: `<html><head></head><body><h1>Menu</h1><a href="index.html">Home</a></body></html>` },
+    ];
+    const nestedFiles = [
+      ...filesWithLinks,
+      { path: "posts/essay.html", kind: "file" as const, content: `<html><head></head><body><h1>Essay</h1><a href="index.html">Home</a><a href="../menu.html">Menu</a></body></html>` },
+    ];
+    const built = buildSite(nestedFiles, [...pages, { path: "/posts/essay", title: "Essay", description: "", og_image: "" }], {}, "Ab12cd", "https://wp.example.com");
+    const home = parse(built.pages["/"]);
+    const hrefs = home.querySelectorAll("a[href]").map((a) => a.getAttribute("href"));
+    expect(hrefs).toContain("/p/Ab12cd/menu");
+    expect(hrefs).toContain("/p/Ab12cd/about#team");
+    expect(hrefs).toContain("https://ext.example/x");
+    expect(hrefs).toContain("#top");
+    expect(hrefs).toContain("mailto:hi@x.com");
+    expect(home.querySelector("img")?.getAttribute("src")).toBe("/p/Ab12cd/img/logo.png");
+    const menu = parse(built.pages["/menu"]);
+    expect(menu.querySelector("a[href]")?.getAttribute("href")).toBe("/p/Ab12cd/");
+    const essay = parse(built.pages["/posts/essay"]);
+    const essayHrefs = essay.querySelectorAll("a[href]").map((a) => a.getAttribute("href"));
+    expect(essayHrefs).toContain("/p/Ab12cd/"); // bare index.html from a nested page → home
+    expect(essayHrefs).toContain("/p/Ab12cd/menu"); // ../menu.html from a nested page
   });
 
   it("generates sitemap and robots", () => {

@@ -95,7 +95,7 @@ export default function NewProjectPage() {
                   category={t.category}
                   description={t.description}
                   tags={t.tags}
-                  icon={t.id === "saas" ? "🚀" : t.id === "portfolio" ? "🎨" : "🍽️"}
+                  icon={templateIcon(t.id)}
                 />
               ))}
             </div>
@@ -113,6 +113,23 @@ export default function NewProjectPage() {
       </div>
     </div>
   );
+}
+
+function templateIcon(id: string): string {
+  const map: Record<string, string> = {
+    saas: "🚀",
+    portfolio: "🎨",
+    linktree: "🔗",
+    personal: "👤",
+    chatbot: "🤖",
+    restaurant: "🍽️",
+    agency: "🏢",
+    store: "🛍️",
+    blog: "📝",
+    docs: "📚",
+    startup: "⚡",
+  };
+  return map[id] ?? "🌐";
 }
 
 function TemplateCard({

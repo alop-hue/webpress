@@ -38,14 +38,22 @@ export function buildSite(
   const pageMetas = new Map(pages.map((p) => [p.path, p]));
   const result: BuildResult = { pages: {}, manifest: [], sitemap: "", robots: "", warnings: [] };
 
+  // Project CSS/JS is inlined into the published HTML so /p/[code] renders
+  // fully styled without needing extra asset routes (the export zip still
+  // ships the real files). Relative <link>/<script src> tags pointing at the
+  // project are stripped to avoid 404s and double-loading.
   const cssFiles = [...byPath.keys()]
     .filter((p) => extname(p) === "css")
     .sort()
-    .map((p) => `../${p}`);
+    .map((p) => ({ path: p, content: byPath.get(p) ?? "" }));
   const jsFiles = [...byPath.keys()]
     .filter((p) => extname(p) === "js")
     .sort()
-    .map((p) => `../${p}`);
+    .map((p) => ({ path: p, content: byPath.get(p) ?? "" }));
+  const isExternal = (u: string | undefined) =>
+    !u || /^(https?:)?\/\//.test(u) || u.startsWith("data:") || u.startsWith("#");
+  // escape closing tags inside inlined code so user content can't break out of the injected <style>/<script>
+  const inlineSafe = (s: string) => s.replace(/<\/script/gi, "<\\/script").replace(/<\/style/gi, "<\\/style");
 
   const pageFiles = files.filter((f) => isPageFile(f.path));
   for (const pf of pageFiles) {
@@ -105,14 +113,25 @@ export function buildSite(
         head.appendChild(l.querySelector("link")!);
       }
     }
-    // CSS + JS links
-    for (const c of cssFiles) {
-      const link = parse(`<link rel="stylesheet" href="${c}">`);
-      head.appendChild(link.querySelector("link")!);
+    // strip project-relative stylesheet/script tags (they 404 on /p/[code])
+    for (const el of doc.querySelectorAll('link[rel="stylesheet"], link[rel="stylesheet/less"], script[src]')) {
+      const href = el.getAttribute("href") ?? el.getAttribute("src") ?? "";
+      if (!isExternal(href)) el.remove();
     }
-    for (const j of jsFiles) {
-      const s = parse(`<script src="${j}" defer></script>`);
-      head.appendChild(s.querySelector("script")!);
+    // rewrite relative internal URLs (menu.html, ../about.html, img/logo.png) to
+    // absolute /p/[code]/... paths — the home page is served without a trailing
+    // slash, so bare relative links would otherwise resolve against /p/ and 404
+    rewriteInternalUrls(doc, route, siteCode);
+    // inline project CSS into <head>
+    if (cssFiles.length) {
+      const style = parse(`<style data-webpress="inline">\n${cssFiles.map((c) => `/* ${c.path} */\n${inlineSafe(c.content)}`).join("\n\n")}\n</style>`);
+      head.appendChild(style.querySelector("style")!);
+    }
+    // inline project JS just before </body> (scripts expect the DOM)
+    if (jsFiles.length) {
+      const inline = `<script data-webpress="inline">\n${jsFiles.map((j) => `// ${j.path}\n${inlineSafe(j.content)}`).join("\n\n")}\n</script>`;
+      if (body) body.appendChild(parse(inline).querySelector("script")!);
+      else head.appendChild(parse(inline).querySelector("script")!);
     }
     // custom head injection
     if (settings.customHead) {
@@ -144,6 +163,35 @@ export function buildSite(
     `User-agent: *\nAllow: /\nSitemap: ${baseUrl}/p/${siteCode}/sitemap.xml\n`;
 
   return result;
+}
+
+/** Rewrite relative href/src attributes to absolute /p/{code}/... paths for the given route. */
+function rewriteInternalUrls(doc: HTMLElement, route: string, siteCode: string) {
+  const baseDir = route.includes("/") && !route.endsWith("/") ? route.slice(0, route.lastIndexOf("/") + 1) : "/";
+  const resolve = (href: string): string | null => {
+    if (!href) return null;
+    if (/^(https?:)?\/\//.test(href) || href.startsWith("#") || href.startsWith("data:") || href.startsWith("mailto:") || href.startsWith("tel:") || href.startsWith("javascript:")) return null;
+    const frag = href.includes("#") ? "#" + href.split("#").slice(1).join("#") : "";
+    const clean = href.split(/[?#]/)[0];
+    if (!clean) return null;
+    // bare "index.html"/"./index.html" means the site root (templates use it as "home")
+    if (/^(\\.\/)?index\.html$/i.test(clean)) return `/p/${siteCode}/` + frag;
+    // resolve ./ ../ against the page's directory, then map to a route
+    const joined = new URL(clean, "https://site.local" + baseDir).pathname;
+    if (joined === "/index.html") return `/p/${siteCode}/` + frag;
+    return `/p/${siteCode}` + (joined.endsWith(".html") ? joined.slice(0, -5) : joined) + frag;
+  };
+  for (const el of doc.querySelectorAll("a[href]")) {
+    const h = el.getAttribute("href") ?? "";
+    const abs = resolve(h);
+    if (abs) el.setAttribute("href", abs);
+  }
+  for (const el of doc.querySelectorAll("img[src], video[src], audio[src], source[src], iframe[src], embed[src], track[src], input[src], form[action], link[href]")) {
+    const attr = el.tagName === "FORM" ? "action" : el.tagName === "LINK" ? "href" : "src";
+    const v = el.getAttribute(attr) ?? "";
+    const abs = resolve(v);
+    if (abs) el.setAttribute(attr, abs);
+  }
 }
 
 function setMeta(

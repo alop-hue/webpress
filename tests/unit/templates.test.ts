@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { TEMPLATES } from "@/lib/templates";
 import { pageToPath } from "@/lib/editor/fs";
+import { buildSite } from "@/lib/editor/build";
 import { parse } from "node-html-parser";
 
 describe("templates", () => {
@@ -43,11 +44,42 @@ describe("templates", () => {
         const doc = parse(f.content);
         for (const a of doc.querySelectorAll("a")) {
           const href = a.getAttribute("href") ?? "";
-          if (!href.startsWith("/") && !href.startsWith("http") && !href.startsWith("#") && !href.startsWith("mailto:") && href !== "") {
+          if (!href.startsWith("/") && !href.startsWith("http") && !href.startsWith("#") && !href.startsWith("mailto:") && !href.startsWith("tel:") && href !== "") {
             const base = href.split("#")[0];
             const target = base === "index.html" ? "/" : "/" + base.replace(/\.html$/, "");
             expect(routes.has(target), `${t.id}:${f.path} → ${href}`).toBe(true);
           }
+        }
+      }
+    }
+  });
+
+  it("every declared page builds into the published site", () => {
+    for (const t of TEMPLATES) {
+      const meta = t.pages.map((p) => ({ ...p, og_image: "" }));
+      const built = buildSite(t.files, meta, {}, "test1", "https://x.example");
+      const expected = new Set(t.pages.map((p) => p.path));
+      const actual = new Set(Object.keys(built.pages));
+      for (const r of expected) {
+        expect(actual.has(r), `${t.id}: missing built page for ${r} (warnings: ${built.warnings.join("; ")})`).toBe(true);
+      }
+    }
+  });
+
+  it("every template builds into styled, self-contained published pages", () => {
+    for (const t of TEMPLATES) {
+      const meta = t.pages.map((p) => ({ ...p, og_image: "" }));
+      const built = buildSite(t.files, meta, {}, "test1", "https://x.example");
+      for (const [route, html] of Object.entries(built.pages)) {
+        const doc = parse(html);
+        expect(doc.querySelector("title")?.textContent?.trim().length, `${t.id}:${route} title`).toBeGreaterThan(3);
+        expect(doc.querySelector('meta[name="viewport"]'), `${t.id}:${route} viewport`).toBeTruthy();
+        // css/js inlined so /p/[code] renders styled without asset routes
+        expect(doc.querySelectorAll("style[data-webpress=inline]").length, `${t.id}:${route} inline css`).toBeGreaterThan(0);
+        // no project-relative stylesheet links that would 404
+        for (const l of doc.querySelectorAll("link[rel=stylesheet]")) {
+          const href = l.getAttribute("href") ?? "";
+          expect(/^(https?:)?\/\//.test(href), `${t.id}:${route} → ${href}`).toBe(true);
         }
       }
     }

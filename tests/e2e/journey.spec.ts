@@ -15,7 +15,8 @@ async function signup(page: Page) {
 async function createSassProject(page: Page) {
   await page.getByRole("button", { name: "New site" }).click();
   await page.getByPlaceholder(/e\.g\. My Studio/).fill("E2E Smoke Site");
-  // the SaaS template is pre-selected when templates load
+  // explicitly pick the SaaS template (template order may change)
+  await page.getByRole("button", { name: /SaaS Landing/ }).click();
   await page.getByRole("button", { name: "Create site" }).click();
   await page.waitForURL(/\/editor\//, { timeout: 30_000 });
 }

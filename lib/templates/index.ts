@@ -1,4 +1,7 @@
 import type { FileEntry } from "@/lib/editor/fs";
+import { LINKTREE_TEMPLATE, PERSONAL_TEMPLATE, CHATBOT_TEMPLATE } from "./personal-templates";
+import { RESTAURANT_TEMPLATE, AGENCY_TEMPLATE, STORE_TEMPLATE } from "./business-templates";
+import { BLOG_TEMPLATE, DOCS_TEMPLATE, STARTUP_TEMPLATE } from "./content-templates";
 
 export interface TemplateDef {
   id: string;
@@ -256,6 +259,15 @@ const saasHome = String.raw`<!DOCTYPE html>
 </html>`;
 
 export const TEMPLATES: TemplateDef[] = [
+  LINKTREE_TEMPLATE,
+  CHATBOT_TEMPLATE,
+  STARTUP_TEMPLATE,
+  RESTAURANT_TEMPLATE,
+  AGENCY_TEMPLATE,
+  STORE_TEMPLATE,
+  BLOG_TEMPLATE,
+  DOCS_TEMPLATE,
+  PERSONAL_TEMPLATE,
   {
     id: "saas",
     name: "SaaS Landing",
